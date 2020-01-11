@@ -1,14 +1,21 @@
 module PolygonOps
 
-export isinside
+export inpolygon
 
 """
-isinside
+    inpolygon(p, poly)
 
-Hao algorithm
+check the membership of `p` in
+
+Returns:
+    - in = 1
+    - on = -1
+    - out = 0
+
+Based on the algorithm by Hao, et. al. :
 https://www.researchgate.net/publication/328261689_Optimal_Reliable_Point-in-Polygon_Test_and_Differential_Coding_Boolean_Operations_on_Polygons
 """
-function isinside(p, poly)
+function inpolygon(p, poly)
     k = 0
 
     xp = p[1]
