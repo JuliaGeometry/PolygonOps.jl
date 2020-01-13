@@ -5,7 +5,7 @@ export inpolygon
 """
     inpolygon(p, poly)
 
-check the membership of `p` in
+check the membership of `p` in `poly`. Works invariant of winding order.
 
 Returns:
     - in = 1
