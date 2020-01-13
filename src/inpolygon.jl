@@ -88,34 +88,37 @@ See: http://www.sciencedirect.com/science/article/pii/S0925772101000128
 "The point in polygon problem for arbitrary polygons"
 An implementation of Hormann-Agathos (2001) Point in Polygon algorithm
 """
-function inpolygon(v, poly, ::HormannAgathos)
+function inpolygon(r, poly, ::HormannAgathos)
     c = false
-    r = v.location
-    for q1 in poly
-        q2 = q1.next
-        if q1.location == r
-            throw(VertexException())
+    for i in 1:length(poly)-1
+        q1 = poly[i]
+        q2 = poly[i+1]
+        if q1 == r
+            # throw(VertexException())
+            return -1 # on
         end
-        if q2.location[2] == r[2]
-            if q2.location[1] == r[1]
-                throw(VertexException())
-            elseif (q1.location[2] == r[2]) && ((q2.location[1] > r[1]) == (q1.location[1] < r[1]))
-                throw(EdgeException())
+        if q2[2] == r[2]
+            if q2[1] == r[1]
+                #throw(VertexException())
+                return -1 # on
+            elseif (q1[2] == r[2]) && ((q2[1] > r[1]) == (q1[1] < r[1]))
+                #throw(EdgeException())
+                return -1 # on
             end
         end
-        if (q1.location[2] < r[2]) != (q2.location[2] < r[2]) # crossing
-            if q1.location[1] >= r[1]
-                if q2.location[1] > r[1]
+        if (q1[2] < r[2]) != (q2[2] < r[2]) # crossing
+            if q1[1] >= r[1]
+                if q2[1] > r[1]
                     c = !c
-                elseif ((detq(q1.location,q2.location,r) > 0) == (q2.location[2] > q1.location[2])) # right crossing
+                elseif (detq(q1,q2,r) > 0) == (q2[2] > q1[2]) # right crossing
                     c = !c
                 end
-            elseif q2.location[1] > r[1]
-                if ((detq(q1.location,q2.location,r) > 0) == (q2.location[2] > q1.location[2])) # right crossing
+            elseif q2[1] > r[1]
+                if (detq(q1,q2,r) > 0) == (q2[2] > q1[2]) # right crossing
                     c = !c
                 end
             end
         end
     end
-    return c
+    return Int(c)
 end
