@@ -1,6 +1,6 @@
 module PolygonOps
 
-export inpolygon
+export inpolygon, HormannAgathos, HaoSun
 
 include("inpolygon.jl")
 

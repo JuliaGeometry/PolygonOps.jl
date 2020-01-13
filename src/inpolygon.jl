@@ -1,4 +1,17 @@
 
+
+abstract type MembershipCheckAlgorithm end
+
+"""
+https://www.researchgate.net/publication/328261689_Optimal_Reliable_Point-in-Polygon_Test_and_Differential_Coding_Boolean_Operations_on_Polygons
+"""
+struct HaoSun <: MembershipCheckAlgorithm end
+
+"""
+http://www.sciencedirect.com/science/article/pii/S0925772101000128
+"""
+struct HormannAgathos <: MembershipCheckAlgorithm end
+
 """
 inpolygon(p, poly)
 
@@ -9,10 +22,14 @@ Returns:
 - on = -1
 - out = 0
 
-Based on the algorithm by Hao, et. al. :
+Based on the algorithm by Hao and Sun :
 https://www.researchgate.net/publication/328261689_Optimal_Reliable_Point-in-Polygon_Test_and_Differential_Coding_Boolean_Operations_on_Polygons
 """
 function inpolygon(p, poly)
+    inpolygon(p, poly, HaoSun())
+end
+
+function inpolygon(p, poly, ::HaoSun)
     k = 0
 
     xp = p[1]
@@ -66,11 +83,12 @@ function detq(q1,q2,r)
     (q1[1]-r[1])*(q2[2]-r[2])-(q2[1]-r[1])*(q1[2]-r[2])
 end
 
-#function isinside(v::Vertex, poly::Polygon)
-function isinside(v, poly)
-    # See: http://www.sciencedirect.com/science/article/pii/S0925772101000128
-    # "The point in polygon problem for arbitrary polygons"
-    # An implementation of Hormann-Agathos (2001) Point in Polygon algorithm
+"""
+See: http://www.sciencedirect.com/science/article/pii/S0925772101000128
+"The point in polygon problem for arbitrary polygons"
+An implementation of Hormann-Agathos (2001) Point in Polygon algorithm
+"""
+function inpolygon(v, poly, ::HormannAgathos)
     c = false
     r = v.location
     for q1 in poly
