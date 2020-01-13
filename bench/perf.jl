@@ -17,13 +17,16 @@ circle_poly = map(circle, 0:(2pi/1000000):2pi)
 
 # end == begin
 push!(circle_poly, circle_poly[1])
-@test inpolygon(SVector(0.1,0),circle_poly) == 1
-@test inpolygon(SVector(0.,2.),circle_poly) == 0
-@test inpolygon(SVector(2.,0.),circle_poly) == 0
-@test inpolygon(SVector(1.,0.),circle_poly) == -1
-@test inpolygon(SVector(0.,-2.),circle_poly) == 0
+for algo in (HaoSun(),HormannAgathos())
+    @test inpolygon(SVector(0.1,0),circle_poly,algo) == 1
+    @test inpolygon(SVector(0.,2.),circle_poly,algo) == 0
+    @test inpolygon(SVector(2.,0.),circle_poly,algo) == 0
+    @test inpolygon(SVector(1.,0.),circle_poly,algo) == -1
+    @test inpolygon(SVector(0.,-2.),circle_poly,algo) == 0
+end
 
-suite["inpolygon"]["circle"] = @benchmarkable inpolygon(SVector(0,0),circle_poly)
+suite["inpolygon"]["circle, HaoSun"] = @benchmarkable inpolygon(SVector(0,0),circle_poly, HaoSun())
+suite["inpolygon"]["circle, HormanAgathos"] = @benchmarkable inpolygon(SVector(0,0),circle_poly, HormannAgathos())
 
 
 results = run(suite)
