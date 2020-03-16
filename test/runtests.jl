@@ -30,3 +30,22 @@ edge(p1, p2) = (SVector(p1),SVector(p2))
         @test inpolygon(SVector(0,0),poly, algo) == -1 #on
     end
 end
+
+@testset "area/centroid" begin
+    poly1 = SVector{2,Int}[(0,0),(0,10),(10,10),(10,0),(0,0)]
+    poly2 = poly1.*5
+
+    @testset "area" begin
+        @test PolygonOps.area(poly1) == -100
+        @test PolygonOps.area(reverse(poly1)) == 100
+        @test PolygonOps.area(poly2) == -2500
+        @test PolygonOps.area(reverse(poly2)) == 2500
+    end
+
+    @testset "centroid" begin
+        @test PolygonOps.centroid(poly1) == SVector(5,5)
+        @test PolygonOps.centroid(reverse(poly1)) == SVector(5,5)
+        @test PolygonOps.centroid(poly2) == SVector(25,25)
+        @test PolygonOps.centroid(reverse(poly2)) == SVector(25,25)
+    end
+end
