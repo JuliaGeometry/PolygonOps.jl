@@ -3,41 +3,59 @@
 abstract type MembershipCheckAlgorithm end
 
 """
-https://www.researchgate.net/publication/328261689_Optimal_Reliable_Point-in-Polygon_Test_and_Differential_Coding_Boolean_Operations_on_Polygons
+Algorithm by Hao and Sun (2018):
+https://doi.org/10.3390/sym10100477
 """
 struct HaoSun <: MembershipCheckAlgorithm end
 
 """
-http://www.sciencedirect.com/science/article/pii/S0925772101000128
+Hormann-Agathos (2001) Point in Polygon algorithm:
+https://doi.org/10.1016/S0925-7721(01)00012-8
 """
 struct HormannAgathos <: MembershipCheckAlgorithm end
 
 """
-inpolygon(p, poly)
+    inpolygon(p, poly)
+    inpolygon(p, poly, [::MembershipCheckAlgorithm])
 
-check the membership of `p` in `poly`. Works invariant of winding order.
+check the membership of `p` in `poly` where `poly` is an `AbstractVector` of `AbstractVector`s.
+`poly` should have the first and last elements equal.
 
 Returns:
 - in = 1
 - on = -1
 - out = 0
 
-Based on the algorithm by Hao and Sun :
-https://www.researchgate.net/publication/328261689_Optimal_Reliable_Point-in-Polygon_Test_and_Differential_Coding_Boolean_Operations_on_Polygons
+MembershipCheckAlgorithm:
+
+- `HaoSun()`
+- `HormannAgathos()`
+
+Default is `HaoSun()` as it has the best performance and works invariant of winding order and self-intersections.
+However the HaoSun algorithm is new and bugs may be possible. The classic HormannAgathos algorithm
+is provided, however it is sensitive to self-intersections and winding order so may produce different results.
+
+Algorithm by Hao and Sun (2018):
+https://doi.org/10.3390/sym10100477
+
+Hormann-Agathos (2001) Point in Polygon algorithm:
+https://doi.org/10.1016/S0925-7721(01)00012-8
 """
 function inpolygon(p, poly)
     inpolygon(p, poly, HaoSun())
 end
 
-function inpolygon(p, poly, ::HaoSun)
+function inpolygon(p, poly, ::Union{HaoSun,Type{HaoSun}})
     k = 0
 
     xp = p[1]
     yp = p[2]
 
+    validate_poly(poly)
+
     PT = eltype(p)
 
-    for i = 1:length(poly)-1
+    @inbounds for i in UnitRange(firstindex(poly),lastindex(poly)-1)
         v1 = poly[i][2] - yp
         v2 = poly[i+1][2] - yp
 
@@ -80,17 +98,16 @@ function inpolygon(p, poly, ::HaoSun)
 end
 
 function detq(q1,q2,r)
-    (q1[1]-r[1])*(q2[2]-r[2])-(q2[1]-r[1])*(q1[2]-r[2])
+    @inbounds (q1[1]-r[1])*(q2[2]-r[2])-(q2[1]-r[1])*(q1[2]-r[2])
 end
 
-"""
-See: http://www.sciencedirect.com/science/article/pii/S0925772101000128
-"The point in polygon problem for arbitrary polygons"
-An implementation of Hormann-Agathos (2001) Point in Polygon algorithm
-"""
-function inpolygon(r, poly, ::HormannAgathos)
+
+function inpolygon(r, poly, ::Union{HormannAgathos,Type{HormannAgathos}})
     c = false
-    for i in 1:length(poly)-1
+
+    validate_poly(poly)
+
+    @inbounds for i in UnitRange(firstindex(poly),lastindex(poly)-1)
         q1 = poly[i]
         q2 = poly[i+1]
         if q1 == r
