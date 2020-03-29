@@ -3,6 +3,9 @@
 ```@index
 ```
 
-```@autodocs
-Modules = [PolygonOps]
+
+```@docs
+PolygonOps.inpolygon
+PolygonOps.HaoSun
+PolygonOps.HormannAgathos
 ```
