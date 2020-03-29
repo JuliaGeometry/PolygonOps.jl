@@ -9,7 +9,7 @@ The objective of this package is to provide a set of generic polygon operations.
  - the container and points are both vector-like.
  - the first and last elements are equal. 
  
-This should provide generic implementations portable and extensible for packages such as GeoemtryTypes, GeometryBasics, and JuliaGeo.
+This should provide generic implementations portable and extensible for packages such as GeometryTypes, GeometryBasics, and JuliaGeo.
 
 Please see the [docs](https://juliageometry.github.io/PolygonOps.jl/stable) for a list of exported functions.
 
