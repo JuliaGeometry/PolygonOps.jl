@@ -6,11 +6,9 @@ makedocs(;
     pages=[
         "Home" => "index.md",
     ],
-    repo="https://github.com/juliageometry/PolygonOps.jl/blob/{commit}{path}#L{line}",
+    repo="https://github.com/JuliaGeometry/PolygonOps.jl/blob/{commit}{path}#L{line}",
     sitename="PolygonOps.jl",
-    authors="steve <kd2cca@gmail.com>",
-    assets=String[],
-)
+    authors="steve <kd2cca@gmail.com>")
 
 deploydocs(;
     repo="github.com/juliageometry/PolygonOps.jl",
