@@ -11,5 +11,5 @@ makedocs(;
     authors="steve <kd2cca@gmail.com>")
 
 deploydocs(;
-    repo="github.com/juliageometry/PolygonOps.jl",
+    repo="github.com/JuliaGeometry/PolygonOps.jl",
 )
