@@ -16,6 +16,13 @@ edge(p1, p2) = (SVector(p1),SVector(p2))
             @test inpolygon(SVector(5,10),poly, algo) == -1 #on
             @test inpolygon(SVector(10,10),poly, algo) == -1 #on
             @test inpolygon(SVector(0,0),poly, algo) == -1 #on
+
+            @test inpolygon(SVector(5,5),poly, algo, in=true,on=true,out=false) #in
+            @test !inpolygon(SVector(-5,-5),poly, algo, in=true,on=true,out=false) #out
+            @test inpolygon(SVector(0,5),poly, algo, in=true,on=true,out=false) #on
+            @test inpolygon(SVector(5,10),poly, algo, in=true,on=true,out=false) #on
+            @test inpolygon(SVector(10,10),poly, algo, in=true,on=true,out=false) #on
+            @test inpolygon(SVector(0,0),poly, algo, in=true,on=true,out=false) #on
         end
     end
     @testset "Hormann Agathos" begin
@@ -28,6 +35,15 @@ edge(p1, p2) = (SVector(p1),SVector(p2))
         @test inpolygon(SVector(5,10),poly, algo) == -1 #on
         @test inpolygon(SVector(10,10),poly, algo) == -1 #on
         @test inpolygon(SVector(0,0),poly, algo) == -1 #on
+    end
+    @testset "API" begin
+        poly = poly1
+        @test inpolygon(SVector(5,5),poly, in=true,on=true,out=false) #in
+        @test !inpolygon(SVector(-5,-5),poly, in=true,on=true,out=false) #out
+        @test inpolygon(SVector(0,5),poly, in=true,on=true,out=false) #on
+        @test inpolygon(SVector(5,10),poly, in=true,on=true,out=false) #on
+        @test inpolygon(SVector(10,10),poly, in=true,on=true,out=false) #on
+        @test inpolygon(SVector(0,0),poly, in=0x0,on=0x0,out=0x1) === 0x0 #on
     end
 end
 
