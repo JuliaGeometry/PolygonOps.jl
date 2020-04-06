@@ -17,16 +17,17 @@ struct HormannAgathos <: MembershipCheckAlgorithm end
 """
     inpolygon(p, poly)
     inpolygon(p, poly, [::MembershipCheckAlgorithm])
+    inpolygon(p, poly, [::MembershipCheckAlgorithm]; in = 1, on = -1, out = 0)
 
 check the membership of `p` in `poly` where `poly` is an `AbstractVector` of `AbstractVector`s.
 `poly` should have the first and last elements equal.
 
-Returns:
+*Returns:*
 - in = 1
 - on = -1
 - out = 0
 
-MembershipCheckAlgorithm:
+*MembershipCheckAlgorithm:*
 
 - `HaoSun()`
 - `HormannAgathos()`
@@ -35,17 +36,23 @@ Default is `HaoSun()` as it has the best performance and works invariant of wind
 However the HaoSun algorithm is new and bugs may be possible. The classic HormannAgathos algorithm
 is provided, however it is sensitive to self-intersections and winding order so may produce different results.
 
+*Custom return values:*
+
+The return logic can be customized to return alternate values and types by specify the `in`, `on`, and `out` keywords.
+For example, to treat the 'on' and 'in' cases the same and return a `Bool`:
+`inpolygon(p, poly, in=true, on=true, out=false)`
+
 Algorithm by Hao and Sun (2018):
 https://doi.org/10.3390/sym10100477
 
 Hormann-Agathos (2001) Point in Polygon algorithm:
 https://doi.org/10.1016/S0925-7721(01)00012-8
 """
-function inpolygon(p, poly)
-    inpolygon(p, poly, HaoSun())
+function inpolygon(p, poly; kwargs...)
+    inpolygon(p, poly, HaoSun(); kwargs...)
 end
 
-function inpolygon(p, poly, ::Union{HaoSun,Type{HaoSun}})
+function inpolygon(p, poly, ::Union{HaoSun,Type{HaoSun}}; in::T=1, on::T=-1, out::T=0) where {T}
     k = 0
 
     xp = p[1]
@@ -72,29 +79,29 @@ function inpolygon(p, poly, ::Union{HaoSun,Type{HaoSun}})
             if f > zero(PT)
                 k += 1
             elseif iszero(f)
-                return -1
+                return on
             end
         elseif v1 > zero(PT) && v2 <= zero(PT)
             if f < zero(PT)
                 k += 1
             elseif iszero(f)
-                return -1
+                return on
             end
         elseif iszero(v2) && v1 < zero(PT)
-            iszero(f) && return -1
+            iszero(f) && return on
         elseif iszero(v1) && v2 < zero(PT)
-            iszero(f) && return -1
+            iszero(f) && return on
         elseif iszero(v1) && iszero(v2)
             if u2 <= zero(PT) && u1 >= zero(PT)
-                return -1
+                return on
             elseif u1 <= zero(PT) && u2 >= zero(PT)
-                return -1
+                return on
             end
         end
     end
 
-    iszero(k % 2) && return 0
-    return 1
+    iszero(k % 2) && return out
+    return in
 end
 
 function detq(q1,q2,r)
@@ -102,7 +109,8 @@ function detq(q1,q2,r)
 end
 
 
-function inpolygon(r, poly, ::Union{HormannAgathos,Type{HormannAgathos}})
+function inpolygon(r, poly, ::Union{HormannAgathos,Type{HormannAgathos}};
+                   in::T=1, on::T=-1, out::T=0) where{T}
     c = false
 
     validate_poly(poly)
@@ -112,15 +120,15 @@ function inpolygon(r, poly, ::Union{HormannAgathos,Type{HormannAgathos}})
         q2 = poly[i+1]
         if q1 == r
             # throw(VertexException())
-            return -1 # on
+            return on
         end
         if q2[2] == r[2]
             if q2[1] == r[1]
                 #throw(VertexException())
-                return -1 # on
+                return on
             elseif (q1[2] == r[2]) && ((q2[1] > r[1]) == (q1[1] < r[1]))
                 #throw(EdgeException())
-                return -1 # on
+                return on
             end
         end
         if (q1[2] < r[2]) != (q2[2] < r[2]) # crossing
@@ -137,5 +145,5 @@ function inpolygon(r, poly, ::Union{HormannAgathos,Type{HormannAgathos}})
             end
         end
     end
-    return Int(c)
+    return c ? in : out
 end
