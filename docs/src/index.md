@@ -3,13 +3,13 @@
 ```@index
 ```
 
+# `inpolygon`
 
 ```@docs
 PolygonOps.inpolygon
 PolygonOps.HaoSun
 PolygonOps.HormannAgathos
 ```
-
 
 ## Examples
 
@@ -35,4 +35,11 @@ inside = [inpolygon(p, polygon; in=true, on=false, out=false) for p in points]
 using Plots
 plot(Tuple.(polygon), legend=false)
 scatter!(Tuple.(points), marker_z=inside)
+```
+
+
+# `PolygonOps.area`
+
+```@docs
+PolygonOps.area
 ```
