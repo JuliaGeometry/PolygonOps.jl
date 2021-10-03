@@ -12,7 +12,7 @@ function area(poly::T) where T
         p2 = poly[i+1]
         a += p1[1]*p2[2]-p2[1]*p1[2]
     end
-    return abs(a)/2
+    return a/2
 end
 
 function centroid(poly::T) where T
