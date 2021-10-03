@@ -15,7 +15,7 @@ Please see the [docs](https://juliageometry.github.io/PolygonOps.jl/stable) for 
 
 Implements:
   - point-in-polygon
-  - area
+  - signed area (shoelace formula)
   - centroid
 
 Planned:

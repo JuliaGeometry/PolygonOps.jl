@@ -1,3 +1,10 @@
+"""
+    area(poly)
+
+Calculate the signed area via the shoelace formula. If the points are ordered
+counterclockwise, the result will be positive. If the points are ordered clockwise,
+the result will be negative.
+"""
 function area(poly::T) where T
     a = zero(eltype(eltype(T)))
     @inbounds for i in 1:length(poly)-1
