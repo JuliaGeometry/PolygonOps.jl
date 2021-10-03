@@ -2,7 +2,7 @@
     area(poly)
 
 Calculate the signed area via the shoelace formula. If the points are ordered
-clockwise, the result will be positive. If the points are ordered counterclockwise,
+counterclockwise, the result will be positive. If the points are ordered clockwise,
 the result will be negative.
 """
 function area(poly::T) where T
